@@ -1,0 +1,10 @@
+<h1> {{ quiz.name}} </h1>
+{% if quiz.question_set.all %}
+<ul>
+    {% for q in quiz.question_set.all %}
+    <li>{{q.text}}</li>
+    {% endfor%}
+</ul>
+{% else %}
+<p>This quiz has no questions :/</p>
+{% endif %}
