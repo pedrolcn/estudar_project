@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Submit</title>
+</head>
+<body>
+    <p>You are submitting to quiz {{ quiz.id }}</p>
+    <p>quiz {{ quiz.id }} has {{ quiz.num_questions }} questions</p>
+    <p>You got {{ right_answers }} right out of {{ quiz.num_questions }}</p>
+    
+</body>
+</html>
