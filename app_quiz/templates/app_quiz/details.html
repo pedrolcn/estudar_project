@@ -1,10 +1,41 @@
-<h1> {{ quiz.name}} </h1>
-{% if quiz.question_set.all %}
-<ul>
-    {% for q in quiz.question_set.all %}
-    <li>{{q.text}}</li>
-    {% endfor%}
-</ul>
-{% else %}
-<p>This quiz has no questions :/</p>
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Details</title>
+
+</head>
+
+<body>
+    <h1> {{ quiz.name}} </h1>
+    {% if quiz.question_set.all %}
+    <ul>
+        <form action="{% url 'app_quiz:submit' quiz.id %}" method="post">
+            {% csrf_token %}
+            {% for q in quiz.question_set.all %}
+            <li><b>{{q.text}}</b><br />
+                {% if q.textAnswer is True %}
+                <p>Text Answer</p>
+                {% else %}
+                    {% for choice in q.multiplechoice_set.all %}
+                    <div class="custom-control custom-radio"> 
+                        <input type="radio" name="question{{ q.id }}" id="q{{ q.id }}choice{{ choice.id }}" class="custom-control-input" value={{choice.id}}>
+                        <label class="custom-control-label" for="q{{ q.id }}choice{{ choice.id }}">{{ choice.text }}</label>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </li>
+            {% endfor%}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </ul>
+    {% else %}
+    <p>This quiz has no questions :/</p>
+    {% endif %}
+</body>
+
+</html>
