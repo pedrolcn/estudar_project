@@ -11,7 +11,11 @@
 <body>
     <p>You are submitting to quiz {{ quiz.id }}</p>
     <p>quiz {{ quiz.id }} has {{ quiz.num_questions }} questions</p>
-    <p>You got {{ right_answers }} right out of {{ quiz.num_questions }}</p>
-    
+    {% for answer in answers%}
+        <p> 
+            your answer for question {{ forloop.counter }} was {{ answer }}<br />
+        </p>
+    {% endfor %}
+    <p>You got {{ right_answers }} right out of {{ quiz.num_questions }}</p>   
 </body>
 </html>

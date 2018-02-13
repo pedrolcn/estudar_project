@@ -2,7 +2,7 @@
 <ul>
     {% for q in latest_quiz_list%}
     <li>
-        <a href="{% url 'app_quiz:details' q.id %}">{{ q.name }}</a></li>
+        <a href="{% url 'app_quiz:quiz' q.id %}">{{ q.name }}</a></li>
     {% endfor%}
     </ul>
 {% else%}
