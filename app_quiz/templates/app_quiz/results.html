@@ -9,8 +9,22 @@
     <title>{{quiz.name}} Results</title>
 </head>
 <body>
-
-    <a href="{% url 'app_quiz:index' %}">return to index</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="navbar-brand"><b>Quiz</b></div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'app_quiz:index'%}">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'app_quiz:quiz' quiz.id %}">{{ quiz.name }} Quiz<span class="sr-only">(current)</span></a>
+            </li>
+            </ul>
+        </div>
+    </nav>    
 
     <p>You are submitting to quiz {{ quiz.id }}</p>
     <p>quiz {{ quiz.id }} has {{ quiz.num_questions }} questions</p>
