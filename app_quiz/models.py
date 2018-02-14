@@ -21,6 +21,16 @@ class Question(models.Model):
     def __str__(self):
         return self.text
 
+    def get_correct_answer(self):
+        if self.textAnswer:
+            return TextAnswer.objects.get(question=self.id).correctAnswer
+
+        else:
+            # Exploits the fact that there SHOULD be only one correct option
+            for item in self.multiplechoice_set.all():
+                if item.isCorrectAnswer:
+                    return item.text
+
 
 class MultipleChoice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

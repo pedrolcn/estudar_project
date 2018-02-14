@@ -37,20 +37,29 @@ def results(request, submission_id):
     answer_display = []
 
     for i, question in enumerate(quiz.question_set.all()):
+        display_dict = {}
+        display_dict['question'] = question
+        display_dict['isCorrect'] = False
+        display_dict['correct_answer'] = question.get_correct_answer()
         if not question.textAnswer:
                 choice = MultipleChoice.objects.get(pk=answer_set[i])
-                answer_display.append(choice.text)
+                display_dict['answer'] = choice.text
 
                 if choice.isCorrectAnswer:
                     correct_answers += 1
                     points += question.value
+                    display_dict['isCorrect'] = True
+
         else:
             text_answer = get_object_or_404(TextAnswer, question=question)
-            answer_display.append(text_answer)
+            display_dict['answer'] = text_answer
 
             if answer_set[i] == text_answer.correctAnswer:
                 correct_answers += 1
                 points += question.value
+                display_dict['isCorrect'] = True
+
+        answer_display.append(display_dict)
 
     context_dict = {
         'quiz': quiz,
