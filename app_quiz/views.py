@@ -3,8 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.utils import timezone
 from django.db.models import Count, Sum
+from django.urls import reverse
 
-from .models import Quiz, Question, MultipleChoice, TextAnswer
+from .models import Quiz, Question, MultipleChoice, TextAnswer, Submission
 
 
 class IndexView(generic.ListView):
@@ -17,28 +18,56 @@ class IndexView(generic.ListView):
             pub_date__lte=timezone.now()).order_by('pub_date')
 
 
-class DetailView(generic.DetailView):
+class QuizView(generic.DetailView):
     model = Quiz
     template_name = 'app_quiz/quiz.html'
 
 
-class ResultsView(generic.DetailView):
-    model = Quiz
-    template_name = 'app_quiz/results.html'
+def results(request, submission_id):
+
+    correct_answers = 0
+    points = 0
+
+    submission = get_object_or_404(Submission, pk=submission_id)
+    quiz = get_object_or_404(Quiz.objects.annotate(
+        num_questions=Count('question'),
+        max_points=Sum('question__value')), pk=submission.quiz.id)
+
+    answer_set = submission.get_answers()
+    answer_display = []
+
+    for i, question in enumerate(quiz.question_set.all()):
+        if not question.textAnswer:
+                choice = MultipleChoice.objects.get(pk=answer_set[i])
+                answer_display.append(choice.text)
+
+                if choice.isCorrectAnswer:
+                    correct_answers += 1
+                    points += question.value
+        else:
+            text_answer = get_object_or_404(TextAnswer, question=question)
+            answer_display.append(text_answer)
+
+            if answer_set[i] == text_answer.correctAnswer:
+                correct_answers += 1
+                points += question.value
+
+    context_dict = {
+        'quiz': quiz,
+        'answers': answer_display,
+        'correct_answers': correct_answers,
+        'points': points
+    }
+
+    return render(request, 'app_quiz/results.html', context_dict)
 
 
 def submit(request, quiz_id):
 
-    right_answers = 0
-    points = 0
-    answers = []
+    answer_set = []
 
-    quiz = get_object_or_404(Quiz.objects.annotate(
-        num_questions=Count('question'),
-        max_points=Sum('question__value')), pk=quiz_id)
-
-    q_num = quiz.num_questions
-    max_pt = quiz.max_points
+    quiz = get_object_or_404(Quiz, pk=quiz_id)
+    submission = get_object_or_404(Submission, quiz=quiz)
 
     for question in quiz.question_set.all():
         try:
@@ -47,34 +76,14 @@ def submit(request, quiz_id):
                 # Catch empty strings in text answers
                 raise KeyError(question.id)
         except KeyError:
-            return render(request, 'app_quiz/quiz.html',
-                          {
-                              'quiz': Quiz.objects.get(pk=quiz_id),
-                              'error_message': "You didn't answer all questions."
-                          })
+            return render(request, 'app_quiz/quiz.html', {
+                'quiz': Quiz.objects.get(pk=quiz_id),
+                'error_message': "You didn't answer all questions."
+            })
         else:
-            if not question.textAnswer:
-                choice = MultipleChoice.objects.get(pk=answer)
+            answer_set.append(answer)
 
-                if choice.isCorrectAnswer:
-                    right_answers += 1
-                    points += question.value
-            else:
-                text_answer = question.textanswer_set.all()[0]
+    submission.set_answers(answer_set)
+    submission.save()
 
-                if answer == text_answer.correctAnswer:
-                    right_answers += 1
-                    points += question.value
-
-            answers.append(answer)
-
-    context_dict = {
-        'quiz': quiz,
-        'right_answers': right_answers,
-        'max_pt': max_pt,
-        'q_num': q_num,
-        'answers': answers,
-        'points': points
-    }
-
-    return render(request, 'app_quiz/submit.html', context_dict)
+    return HttpResponseRedirect(reverse('app_quiz:results', args=(submission.id,)))

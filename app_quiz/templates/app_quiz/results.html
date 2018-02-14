@@ -9,6 +9,9 @@
     <title>Submit</title>
 </head>
 <body>
+
+    <a href="{% url 'app_quiz:index' %}">return to index</a>
+
     <p>You are submitting to quiz {{ quiz.id }}</p>
     <p>quiz {{ quiz.id }} has {{ quiz.num_questions }} questions</p>
     {% for answer in answers%}
@@ -16,7 +19,7 @@
             your answer for question {{ forloop.counter }} was {{ answer }}<br />
         </p>
     {% endfor %}
-    <p>You got {{ right_answers }} right out of {{ quiz.num_questions }}</p>
-    <p>You scored {{ points }} out of {{ max_pt }}</p>
+    <p>You got {{ correct_answers }} right out of {{ quiz.num_questions }}</p>
+    <p>You scored {{ points }} out of {{ quiz.max_points }}</p>
 </body>
 </html>

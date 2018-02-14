@@ -1,4 +1,5 @@
 from django.db import models
+import json
 
 
 class Quiz(models.Model):
@@ -36,3 +37,19 @@ class TextAnswer(models.Model):
 
     def __str__(self):
         return self.correctAnswer
+
+
+class Submission(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    answers = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.quiz.name + " answers"
+
+    # List field from json evil hack
+    def set_answers(self, x):
+        self.answers = json.dumps(x)
+
+    def get_answers(self):
+        # I WANT ANSWERS
+        return json.loads(self.answers)
