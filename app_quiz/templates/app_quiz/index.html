@@ -23,15 +23,26 @@
             </div>
         </nav>
     {% if latest_quiz_list%}
-    <ul>
-    {% for q in latest_quiz_list%}
-        <li>
-            <a href="{% url 'app_quiz:quiz' q.id %}">{{ q.name }}</a>
-        </li>
-    {% endfor%}
-    </ul>
-{% else%}
-<p> No quizzes are available</p>
-{% endif %}
+    <div class="jumbotron">
+            <div class="container">
+              <h1 class="display-3">Quiz Index</h1>
+              <p>Select The quiz you would like to take</p>
+            </div>
+    </div>
+
+    <div class="container">
+        <div class='row'>
+            {% for q in latest_quiz_list%}
+            <div class="col-md-4">
+                    <h2>{{q.name}}</h2>                    
+                    <p>{{q.description}}</p>
+                    <p><a class="btn btn-secondary" href="{% url 'app_quiz:quiz' q.id %}">Take!</a></p>        
+                </div>   
+            {% endfor%}
+        </div>
+    </div>
+    {% else%}
+        <p> No quizzes are available</p>
+    {% endif %}
 </body>
 </html>
