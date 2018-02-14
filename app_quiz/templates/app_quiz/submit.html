@@ -16,6 +16,7 @@
             your answer for question {{ forloop.counter }} was {{ answer }}<br />
         </p>
     {% endfor %}
-    <p>You got {{ right_answers }} right out of {{ quiz.num_questions }}</p>   
+    <p>You got {{ right_answers }} right out of {{ quiz.num_questions }}</p>
+    <p>You scored {{ points }} out of {{ max_pt }}</p>
 </body>
 </html>

@@ -11,33 +11,38 @@
 </head>
 
 <body>
-    <h1> {{ quiz.name}} </h1>
+    <h1> {{ quiz.name}}</h1>
+
+    <a href="{% url 'app_quiz:index' %}">return to index</a>
+
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
     {% if quiz.question_set.all %}
-    <ul>
-        <form action="{% url 'app_quiz:submit' quiz.id %}" method="post">
-            {% csrf_token %}
-            {% for q in quiz.question_set.all %}
-            <li><b>{{q.text}}</b><br />
-                {% if q.textAnswer is True %}
-                <div class="form-group">
-                    <label for="question{{ q.id }}">Answer</label>
-                    <textarea class="form-control" id="question{{ q.id }}" name="question{{ q.id }}" rows="1"></textarea>
-                {% else %}
-                    {% for choice in q.multiplechoice_set.all %}
-                    <div class="custom-control custom-radio"> 
-                        <input type="radio" name="question{{ q.id }}" id="q{{ q.id }}choice{{ choice.id }}" class="custom-control-input" value={{choice.id}}>
-                        <label class="custom-control-label" for="q{{ q.id }}choice{{ choice.id }}">{{ choice.text }}</label>
-                    </div>
-                    {% endfor %}
-                {% endif %}
-            </li>
-            {% endfor%}
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </ul>
+        <ul>
+            <form action="{% url 'app_quiz:submit' quiz.id %}" method="post">
+                {% csrf_token %}
+                {% for q in quiz.question_set.all %}
+                    <li><b>{{ q.text }} ({{q.value}} pts)</b><br />
+                    {% if q.textAnswer is True %}
+                        <div class="form-group">
+                            <label for="question{{ q.id }}">Answer</label>
+                            <textarea class="form-control" id="question{{ q.id }}" name="question{{ q.id }}" rows="1"></textarea>
+                        </div>
+                    {% else %}
+                        {% for choice in q.multiplechoice_set.all %}
+                            <div class="custom-control custom-radio"> 
+                                <input type="radio" name="question{{ q.id }}" id="q{{ q.id }}choice{{ choice.id }}" class="custom-control-input" value={{choice.id}}>
+                                <label class="custom-control-label" for="q{{ q.id }}choice{{ choice.id }}">{{ choice.text }}</label>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    </li>
+                {% endfor%}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </ul>
     {% else %}
-    <p>This quiz has no questions :/</p>
+        <p>This quiz has no questions :/</p>
     {% endif %}
 </body>
 

@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, Sum
 
 from .models import Quiz, Question, MultipleChoice, TextAnswer
 
@@ -30,14 +30,22 @@ class ResultsView(generic.DetailView):
 def submit(request, quiz_id):
 
     right_answers = 0
+    points = 0
     answers = []
 
-    quiz = Quiz.objects.annotate(num_questions=Count('question')).get(pk=quiz_id)
+    quiz = get_object_or_404(Quiz.objects.annotate(
+        num_questions=Count('question'),
+        max_points=Sum('question__value')), pk=quiz_id)
+
     q_num = quiz.num_questions
+    max_pt = quiz.max_points
 
     for question in quiz.question_set.all():
         try:
             answer = request.POST['question%d' % question.id]
+            if not answer:
+                # Catch empty strings in text answers
+                raise KeyError(question.id)
         except KeyError:
             return render(request, 'app_quiz/quiz.html',
                           {
@@ -50,19 +58,23 @@ def submit(request, quiz_id):
 
                 if choice.isCorrectAnswer:
                     right_answers += 1
+                    points += question.value
             else:
                 text_answer = question.textanswer_set.all()[0]
 
                 if answer == text_answer.correctAnswer:
                     right_answers += 1
+                    points += question.value
 
             answers.append(answer)
 
     context_dict = {
         'quiz': quiz,
         'right_answers': right_answers,
+        'max_pt': max_pt,
         'q_num': q_num,
-        'answers': answers
+        'answers': answers,
+        'points': points
     }
 
     return render(request, 'app_quiz/submit.html', context_dict)
