@@ -25,7 +25,7 @@ SECRET_KEY = 'vin=v%80n(^f5ot(@ogaow9n*7^8!s@s$ib^3x!d5$9xk&m5nx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['c59e22f9.ngrok.io']
 
 
 # Application definition
