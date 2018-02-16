@@ -26,38 +26,47 @@
             </li>
             </ul>
         </div>
-    </nav>    
-    <h1> {{ quiz.name}}</h1>
-    {% if quiz.question_set.all %}
-        <ul>
+    </nav>
+    <div class="container">
+        <div class="py-5 text center">
+            <h1><b>{{ quiz.name}}</b></h1>
+        </div>
+        {% if quiz.question_set.all %}
             {% for item in answers %}
-                <li><b>{{ item.question.text }} ({{item.question.value}} pts)</b><br />
-                <p>Your answer: {{item.answer}}</p>
+            <div class="mb-3">
+                <p class="mb-3">
+                    <b>{{ item.question.text }} ({{item.question.value}} pts)</b><br />
+                    Your answer: {{item.answer}}</p>
                 {% if item.isCorrect is True %}
-                <div class="alert alert-success" role="alert">
+                    <div class="alert alert-success" role="alert">
                         Correct!!
-                </div>
+                    </div>
                 {% else %}
-                <div class="alert alert-danger" role="alert">
+                    <div class="alert alert-danger" role="alert">
                         Wrong!<br />
                         <b>Correct Answer: {{ item.correct_answer }}</b>
-                </div>
-
+                    </div>
+            </div>
                 {% endif %}
-                </li>
+            <hr class="mb-4">
             {% endfor%}
-        </ul>
-    {% else %}
-        <p>This quiz has no questions :/</p>
-    {% endif %}
-        <p> 
-        <b>You got {{correct_answers}} Questions right out of {{ quiz.num_questions }}</b><br />
-        <b>You scored {{points}} out of {{quiz.max_points}}</b>
-        </p>
+        {% else %}
+            <p>This quiz has no questions :/</p>
+        {% endif %}
+    
+        <div class="mb-3">
+            <h3>
+                <b>
+                    You got {{correct_answers}} Questions right out of {{ quiz.num_questions }}<br />
+                    You scored {{points}} out of {{quiz.max_points}}
+                </b>
+            </h3>
+        </div>
         <p><a class="btn btn-secondary" href="{% url 'app_quiz:quiz' quiz.id %}">Retake Quiz!</a></p> 
 
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

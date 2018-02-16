@@ -24,40 +24,43 @@
                 </ul>
             </div>
         </nav>
-    <h1> {{ quiz.name}}</h1>
+    <div class='container'>
+        <div class="py-5 text center">
+            <h1><b>{{ quiz.name }}</b></h1>
+            {% if error_message %}<p class='lead'><strong><b>{{ error_message }}</b>></strong></p>{% endif %}
 
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-
-    {% if quiz.question_set.all %}
-        <ul>
-            <form action="{% url 'app_quiz:submit' quiz.id %}" method="post">
+            {% if quiz.question_set.all %}
+        </div>
+            <form class='needs-validation' novalidate action="{% url 'app_quiz:submit' quiz.id %}" method="post">
                 {% csrf_token %}
                 {% for q in quiz.question_set.all %}
-                    <li><b>{{ q.text }} ({{q.value}} pts)</b><br />
                     {% if q.textAnswer is True %}
-                        <div class="form-group">
-                            <label for="question{{ q.id }}">Answer</label>
-                            <textarea class="form-control" id="question{{ q.id }}" name="question{{ q.id }}" rows="1"></textarea>
+                        <div class="mb-3">
+                            <label for="question{{ q.id }}"><b>{{ q.text }} ({{q.value}} pts)</b></label>
+                            <input type="text" class="form-control" id="question{{ q.id }}" name="question{{ q.id }}" required>
+                            <div class="invalid-feedback">You haven't answered this question</div>
                         </div>
                     {% else %}
+                    <p class='mb-3'><b>{{ q.text }} ({{q.value}} pts)</b></p>
                         {% for choice in q.multiplechoice_set.all %}
                             <div class="custom-control custom-radio"> 
-                                <input type="radio" name="question{{ q.id }}" id="q{{ q.id }}choice{{ choice.id }}" class="custom-control-input" value={{choice.id}}>
+                                <input type="radio" name="question{{ q.id }}" id="q{{ q.id }}choice{{ choice.id }}" class="custom-control-input" value={{choice.id}} required>
                                 <label class="custom-control-label" for="q{{ q.id }}choice{{ choice.id }}">{{ choice.text }}</label>
+                                <div class="invalid-feedback">You haven't answered this question</div>
                             </div>
                         {% endfor %}
                     {% endif %}
-                    </li>
+                <hr class="mb-4">
                 {% endfor%}
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-        </ul>
-    {% else %}
-        <p>This quiz has no questions :/</p>
-    {% endif %}
+        {% else %}
+            <p>This quiz has no questions :/</p>
+        {% endif %}
 
+    </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
