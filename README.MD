@@ -1,3 +1,3 @@
-# aprender.com.vc backend recruitment project
+# estudar.com.vc backend recruitment project
 
-## Quiz app
+## Quiz app demo
