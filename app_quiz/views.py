@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.utils import timezone
@@ -23,15 +23,16 @@ class QuizView(generic.DetailView):
     template_name = 'app_quiz/quiz.html'
 
 
-def results(request, submission_id):
+def results(request, quiz_id):
 
     correct_answers = 0
     points = 0
 
-    submission = get_object_or_404(Submission, pk=submission_id)
+    submission = get_list_or_404(
+        Submission, quiz__id__exact=quiz_id).order_by('-pub_date')[0]
     quiz = get_object_or_404(Quiz.objects.annotate(
         num_questions=Count('question'),
-        max_points=Sum('question__value')), pk=submission.quiz.id)
+        max_points=Sum('question__value')), pk=quiz_id)
 
     answer_set = submission.get_answers()
     answer_display = []
