@@ -18,8 +18,9 @@
                 "--noreload",
                 "--nothreading"
             ],
-            "env": {},
-            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "QUIZ_SK": "${printenv QUIZ_SK}"
+            },
             "debugOptions": [
                 "RedirectOutput",
                 "DjangoDebugging"
