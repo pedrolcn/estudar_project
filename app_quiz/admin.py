@@ -21,7 +21,7 @@ class QuizAdmin(admin.ModelAdmin):
 
 
 class SubmissionAdmin(admin.ModelAdmin):
-    readonly_fields = ('pub_date', 'hash_id')
+    readonly_fields = ('quiz', 'answers', 'pub_date', 'hash_id')
     list_display = ('id', 'quiz', 'pub_date', 'hash_id')
 
 admin.site.register(Quiz, QuizAdmin)
