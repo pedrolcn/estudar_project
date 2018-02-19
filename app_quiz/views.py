@@ -29,8 +29,10 @@ def results(request, quiz_id):
     correct_answers = 0
     points = 0
 
+    hash_id = request.COOKIES.get('hash_id')
     submission = Submission.objects.filter(
-        quiz__id__exact=quiz_id).order_by('-pub_date')[0]
+        quiz__id__exact=quiz_id,
+        hash_id__exact=hash_id).order_by('-pub_date')[0]
 
     if not submission:
         # Catch empty queryset
