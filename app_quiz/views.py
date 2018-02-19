@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views import generic
 from django.utils import timezone
 from django.db.models import Count, Sum
@@ -28,8 +28,14 @@ def results(request, quiz_id):
     correct_answers = 0
     points = 0
 
-    submission = get_list_or_404(
-        Submission, quiz__id__exact=quiz_id).order_by('-pub_date')[0]
+    submission = Submission.objects.filter(
+        quiz__id__exact=quiz_id).order_by('-pub_date')[0]
+
+    if not submission:
+        # Catch empty queryset
+        raise Http404(
+            "There is no quiz associated with the given id=%d" % quiz_id)
+
     quiz = get_object_or_404(Quiz.objects.annotate(
         num_questions=Count('question'),
         max_points=Sum('question__value')), pk=quiz_id)
@@ -77,7 +83,7 @@ def submit(request, quiz_id):
     answer_set = []
 
     quiz = get_object_or_404(Quiz, pk=quiz_id)
-    submission = get_object_or_404(Submission, quiz=quiz)
+    submission = Submission(quiz=quiz)
 
     for question in quiz.question_set.all():
         try:
@@ -96,4 +102,4 @@ def submit(request, quiz_id):
     submission.set_answers(answer_set)
     submission.save()
 
-    return HttpResponseRedirect(reverse('app_quiz:results', args=(submission.id,)))
+    return HttpResponseRedirect(reverse('app_quiz:results', args=(quiz_id,)))

@@ -52,7 +52,7 @@ class TextAnswer(models.Model):
 class Submission(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     answers = models.TextField(blank=True, null=True)
-    pub_date = models.DateTimeField('date published')
+    pub_date = models.DateTimeField('date published', auto_now_add=True)
 
     def __str__(self):
         return self.quiz.name + " answers"
